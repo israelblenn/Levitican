@@ -9,21 +9,18 @@
   font-size: 14px;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+@font-face {
+  font-family: 'Cinzel';
+  src: url('/public/CinzelModified.otf') format('otf');
+  font-weight: 400;
+  font-style: normal;
 }
 
 body {
   color: var(--primary);
   background: var(--background);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
   max-width: 1152px;
-  margin: auto;
-  
+  margin: 32px auto;
 }
 
 * {
@@ -37,16 +34,20 @@ a {
   text-decoration: none;
 }
 
+p{
+  font-size: 16px;
+  color: var(--secondary);
+}
+
 ul{
   display: grid;
-  grid-auto-flow: column;
+  grid-template-columns: repeat(5, 1fr);
 
   & :first-child{
     border-left: var(--primary) 0px solid;
   }
 
 }
-
 
 li{
   display: flex;
@@ -63,8 +64,58 @@ li{
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+iframe{
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+header{
+  margin-bottom: 32px;
+}
+
+
+// nav
+
+.flex{ display: flex }
+
+.socials{
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.nav-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+
+// video
+
+.video{
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.video-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+
+// about
+
+.about-container{
+  width: 688px;
+  margin: auto;
+}
+
+.dropcap{
+  float: left;
+  margin: 0 16px 8px 0;
 }
