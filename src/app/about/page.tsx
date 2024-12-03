@@ -13,6 +13,7 @@ export default async function About() {
 
   const aboutEntry = response.items[0]
   const aboutData = aboutEntry?.fields.about
+  
 
   return (
     <div className="about-container">

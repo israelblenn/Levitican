@@ -35,7 +35,7 @@ export default function RootLayout({
               <ul>
                 <li><Link href="/video">VIDEO</Link></li>
                 <li><Link href="/design">DESIGN</Link></li>
-                <li><Link href="/illustration">ILLUSTRATION</Link></li>
+                <li><Link href="/design">ILLUSTRATION</Link></li>
                 <li><Link href="/about">ABOUT</Link></li>
                 <li><Link href="/contact">CONTACT</Link></li>
               </ul>
