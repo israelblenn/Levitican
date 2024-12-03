@@ -24,7 +24,7 @@ export default function RootLayout({
       <body>
         <header>
             <div className="nav-header">
-              <Image priority src={logo} alt="levitican logo" height={72} />
+              <Link href="/"><Image priority src={logo} alt="levitican logo" height={72} /></Link>
               <div className="socials">
                 <Link className="flex" href={'https://www.youtube.com/@LEVITICAN'}><Image priority src={youtube} alt="youtube" height={21}/></Link>
                 <Link className="flex" href={'https://instagram.com/LEVITICAN_ARTS'}><Image priority src={instagram} alt="instagram" height={21}/></Link>

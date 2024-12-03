@@ -29,6 +29,7 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  line-height: normal;
 }
 
 h1{
@@ -100,6 +101,46 @@ button{
   cursor: pointer;
 }
 
+form{
+  width: 560px;
+  margin: 48px auto;
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+}
+
+input, textarea{
+  width: 100%;
+  background-color: var(--tertiary);
+  border: 1px solid var(--primary);
+  padding: 6px 8px;
+  font-family: 'proxima-nova';
+  color: var(--secondary);
+  // font-size: 16px;
+  box-shadow: inset 0 0 8px var(--background);
+
+  &::placeholder{
+    color: #595960;
+  }
+}
+
+textarea{
+  resize: none;
+  height: 360px;
+}
+
+canvas {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+main{
+  line-height: 0
+}
 
 
 
@@ -158,7 +199,24 @@ button{
 
 // contact
 
+.send{
+  background-color: var(--primary);
+  height: 32px;
+  width: 224px;
+  font-family: 'proxima-nova';
+  color: var(--background);
+  font-size: 16px;
+  transition: 300ms ease;
 
+  &:hover{
+    filter: brightness(0.8);
+  }
+
+  &:disabled, [disabled]{
+    pointer-events: none;
+    cursor: default;
+  }
+}
 
 
 // design
