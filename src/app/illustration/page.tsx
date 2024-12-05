@@ -2,11 +2,11 @@ import contentfulClient from '@/src/lib/contentful';
 import { ImageEntry } from '@/src/types/contentful';
 import MasonryLayout from '@/src/components/masonry';
 
-export default async function DesignPage() {
+export default async function IllustrationPage() {
   const entries = await contentfulClient.getEntries<ImageEntry>({ content_type: 'image' });
 
   const images = entries.items
-    // .filter((image) => image.fields.type === 'Design') // ONLY SHOW DESIGNS
+    // .filter((image) => image.fields.type === 'Illustration') // ONLY SHOW ILLUSTRATIONS
     .map((image) => ({
       id: image.sys.id,
       name: image.fields.name,

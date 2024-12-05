@@ -7,22 +7,47 @@
 
   --gutter: 16px;
 
-  font-family: 'proxima-nova';
-  font-size: 13px; //!! is this used?
+  --bar-height: 2px;
+  --hamburger-gap: 7px;
+  --hamburger-margin: 16px;
+  --hamburger-offset: 12px;
+  --animation-timing: 200ms ease-in-out;
+  --hamburger-width: calc(var(--bar-height) * 3 + var(--hamburger-gap) * 2);
+
+  font-family: 'Proxima Nova';
+  font-size: 13px;
 }
+
 
 @font-face {
   font-family: 'Cinzel';
-  src: url('/public/CinzelModified.otf') format('otf');
+  src: url('../../public/fonts/CinzelModified.otf') format('otf');
   font-weight: 400;
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('../../public/fonts/proximanova_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Proxima Nova';
+  src: url('../../public/fonts/proximanova_bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+html { scrollbar-gutter: stable }
+
 body {
   color: var(--primary);
   background: var(--background);
-  max-width: 1152px;
+  max-width: 1184px; // 1152 + padding
   margin: 32px auto;
+  padding: 0 var(--gutter);
 }
 
 * {
@@ -30,6 +55,7 @@ body {
   padding: 0;
   margin: 0;
   line-height: normal;
+  line-height: 150%;
 }
 
 h1{
@@ -54,7 +80,7 @@ small{
   color: var(--secondary);
 }
 
-a {
+a{
   color: inherit;
   text-decoration: none;
 }
@@ -103,6 +129,7 @@ button{
 
 form{
   width: 560px;
+  max-width: 100%;
   margin: 48px auto;
   display: grid;
   gap: 16px;
@@ -114,9 +141,8 @@ input, textarea{
   background-color: var(--tertiary);
   border: 1px solid var(--primary);
   padding: 6px 8px;
-  font-family: 'proxima-nova';
+  font-family: 'Proxima Nova';
   color: var(--secondary);
-  // font-size: 16px;
   box-shadow: inset 0 0 8px var(--background);
 
   &::placeholder{
@@ -155,11 +181,19 @@ main{
   align-items: center;
 }
 
+.socials-mobile{
+  display: none;
+}
+
 .nav-header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+}
+
+.hamburger{
+  display: none;
 }
 
 
@@ -181,6 +215,7 @@ main{
 
 .about-container{
   width: 688px;
+  max-width: 100%;
   margin: auto;
 
   & p{
@@ -203,7 +238,7 @@ main{
   background-color: var(--primary);
   height: 32px;
   width: 224px;
-  font-family: 'proxima-nova';
+  font-family: 'Proxima Nova';
   color: var(--background);
   font-size: 16px;
   transition: 300ms ease;
@@ -230,14 +265,31 @@ main{
   padding-left: var(--gutter);
 }
 
-.design {
+.image {
   margin-bottom: var(--gutter);
   position: relative;
   cursor: pointer;
 }
 
-.design:hover .sleeve {
+.image:hover .sleeve {
   opacity: 1;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+}
+
+.fade-in-image {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+  object-fit: cover;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 .sleeve{
@@ -252,20 +304,20 @@ main{
   align-items: center;
   opacity: 0;
   transition: 200ms;
+  z-index: 1;
 }
 
-.multi {
+.flag {
   position: absolute;
   align-items: center;
   display: grid;
   grid-auto-flow: column;
   gap: 4px;
   top: 8px;
-  left: 8px;
   background-color: rgba(0, 0, 0, 0.2);
   color: white;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 6px;
+  z-index: 1;
 }
 
 .modal {
@@ -274,12 +326,13 @@ main{
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(10, 10, 10, 0.8);
   display: flex;
   align-items: center;
   opacity: 0;
   transition: 0.3s ease;
   pointer-events: none; 
+  z-index: 2;
 
   &::after {
     content: '';
@@ -342,3 +395,146 @@ main{
   height: 100%;
   transition: 500ms ease;
 }
+
+
+
+@media (hover: hover) and (pointer: fine) {
+  
+  li:hover{color: var(--primary);}
+  .send:hover{filter: unset;}
+  
+}
+
+
+@media only screen and (max-width: 1152px) {
+  
+  body { margin: 16px auto }
+
+  a{ line-height: 100% }
+
+  .logo{ max-width: calc(100vw - var(--gutter) * 2 - var(--hamburger-width) - 64px) }
+
+  .socials{ display: none }
+
+  .socials-mobile{
+    display: flex;
+    gap: 14px;
+  }
+
+  .nav-header{ margin: 0 }
+
+  header{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .video-container{ grid-template-columns: 1fr }
+
+  .video{
+    width: 100%;
+    aspect-ratio: unset;
+  }
+
+  .dropcap{ display: none }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 3;
+    transition: var(--animation-timing);
+    opacity: 0;
+    background: rgba(25, 25, 26, 0.8);
+    backdrop-filter: blur(0px);
+    padding: calc(var(--hamburger-margin) + var(--hamburger-offset)) var(--hamburger-margin);
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  ul{
+    display: grid;
+    grid-template-columns: 1fr;
+    width: calc(100% - var(--hamburger-width) - var(--hamburger-gap));
+    gap: 24px;
+  }
+  
+  li{
+    border: none;
+    font-size: 28px;
+    & * { justify-content: start }
+  }
+
+  .hamburger {
+    margin-top: var(--hamburger-offset);
+    --x-width: calc(var(--hamburger-width) * 1.41421356237);
+    display: flex;
+    flex-direction: column;
+    gap: var(--hamburger-gap);
+    width: var(--hamburger-width);
+    top: var(--hamburger-margin);
+    right: var(--hamburger-margin);
+    z-index: 4;
+    cursor: pointer;
+    overflow: hidden;
+  
+    &::before, &::after, input {
+      content: "";
+      width: var(--hamburger-width);
+      height: var(--bar-height);
+      background-color: var(--primary);
+      transform-origin: left center;
+      transition: var(--animation-timing);
+    }
+  
+    input {
+      margin: 0;
+      padding: 0;
+      appearance: none;
+      outline: none;
+      pointer-events: none;
+      border: none;
+      box-shadow: none;
+  
+      &:checked {
+        opacity: 0;
+        width: 0;
+      }
+    }
+  
+    &:has(input:checked) {
+      position: fixed;
+  
+      &::before {
+        rotate: 45deg;
+        width: var(--x-width);
+        translate: 0 calc(var(--bar-height) / -2);
+      }
+  
+      &::after {
+        rotate: -45deg;
+        width: var(--x-width);
+        translate: 0 calc(var(--bar-height) / 2);
+      }
+  
+      + nav {
+        opacity: 1;
+        backdrop-filter: blur(24px);
+        pointer-events: all;
+      }
+    }
+  }
+  
+
+  
+  
+
+  
+
+
+  
+}
+

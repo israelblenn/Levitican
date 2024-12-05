@@ -3,24 +3,65 @@
 import Masonry from 'react-masonry-css'
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react' 
-import { DesignFields } from '@/src/types/contentful'
+import { ImageFields } from '@/src/types/contentful'
 import multi from "@/public/multi.svg" 
 import left from "@/public/left.svg"
 import right from "@/public/right.svg" 
 import exit from "@/public/exit.svg"
 
-interface DesignMasonryProps {
-  designs: Array<{
-    date: string
+interface MasonryLayoutProps {
+  images: Array<{
     id: string 
-    images: DesignFields['images'] 
     name: string
+    date: string
+    media: ImageFields['media'] 
   }>
+}
+
+interface ImageCarouselProps {
+  media: ImageFields['media']
+  alt: string
+}
+
+// Carousel for fading collections in the grid
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ media, alt }) => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [fadeImageIndex, setFadeImageIndex] = useState<number | null>(null)
+  const [fade, setFade] = useState(false)
+  const fadeDuration = 1000
+  const fadeInterval = 4000
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % media.length
+      setFadeImageIndex(nextIndex)
+      setFade(true)
+
+      setTimeout(() => {
+        setCurrentIndex(nextIndex)
+        setFadeImageIndex(null)
+        setFade(false)
+      }, fadeDuration)
+
+    }, fadeInterval)
+
+    return () => clearInterval(interval)
+  }, [currentIndex, media.length])
+
+  const currentImageUrl = media[currentIndex].fields.file.url
+  const fadeImageUrl = fadeImageIndex !== null ? media[fadeImageIndex].fields.file.url : null
+
+  return (
+    <div className="carousel">
+      <Image src={`https:${currentImageUrl}`} alt={alt} fill style={{ objectFit: 'cover' }}/>
+      {fade && fadeImageUrl && (<Image src={`https:${fadeImageUrl}`} alt={alt} fill className="fade-in-image"/>)}
+    </div>
+  )
 }
 
 const formatDate = (date: string) => { return date.replace(/-/g, '.') }
 
-const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
+const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [translateX, setTranslateX] = useState(0)
   const [modalVisibility, setModalVisibility] = useState(false)
@@ -28,15 +69,15 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]) 
   const padding = 200
   const breakpointColumnsObj = { default: 4, 1100: 3, 700: 2, 500: 1 }
-  const [selectedDesign, setSelectedDesign] = useState<null | {
+  const [selectedImage, setselectedImage] = useState<null | {
     name: string
     date: string
-    images: DesignFields['images']
+    media: ImageFields['media']
   }>(null) 
 
-  // Open modal when a design is selected
+  // Open modal when an image is selected
   useEffect(() => {
-    if (selectedDesign) {
+    if (selectedImage) {
       setModalVisibility(true) 
       const firstSlide = slideRefs.current[0]
       if (firstSlide) {
@@ -45,13 +86,13 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
         setTimeout(() => setInitializing(false), 10) 
       }
     }
-  }, [selectedDesign])
+  }, [selectedImage])
   
   // Close modal
   const handleCloseModal = () => {
     setModalVisibility(false)
     setTimeout(() => {
-      setSelectedDesign(null)
+      setselectedImage(null)
       setCurrentImageIndex(0)
       setTranslateX(0)
       slideRefs.current = []
@@ -60,11 +101,11 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
 
   // Navigate modal with arrows
   const navigateModal = (direction: 'next' | 'previous') => {
-    if (selectedDesign) {
+    if (selectedImage) {
       const isNext = direction === 'next'
       const newIndex = isNext ? currentImageIndex + 1 : currentImageIndex - 1
   
-      if (newIndex >= 0 && newIndex < selectedDesign.images.length) {
+      if (newIndex >= 0 && newIndex < selectedImage.media.length) {
         const currentSlide = slideRefs.current[currentImageIndex]
         const targetSlide = slideRefs.current[newIndex]
   
@@ -84,39 +125,43 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
   return (
     <>
       <Masonry breakpointCols={breakpointColumnsObj} className="masonry-grid" columnClassName="masonry-column">
-        {designs.map((design) => {
-          const { url, details } = design.images[0].fields.file
-          const aspectRatio = (details?.image?.width || 1) / (details?.image?.height || 1)
+        {images.map((image) => {
+          const aspectRatio = (image.media[0].fields.file.details?.image?.width || 1) / (image.media[0].fields.file.details?.image?.height || 1)
 
           return (
             <div
-              key={design.id} 
-              className="design"
+              key={image.id} 
+              className="image"
               style={{ aspectRatio }}
-              onClick={() => { setSelectedDesign({ name: design.name, date: design.date, images: design.images })}}
+              onClick={() => { setselectedImage({ name: image.name, date: image.date, media: image.media })}}
             >
-              <Image src={`https:${url}`} alt={design.name} fill />
-              {design.images.length > 1 && (
-                <div className="multi">
+              <div className="sleeve">
+                <b>{image.name}</b>
+                <small>{formatDate(image.date)}</small>
+              </div>
+              {image.media.length > 1 ? (
+                <ImageCarousel media={image.media} alt={image.name} />
+              ) : (
+                <Image src={`https:${image.media[0].fields.file.url}`} alt={image.name} fill />
+              )}
+              {image.media.length > 1 && (
+                <div className="flag">
                   <Image src={multi} alt="multiple images icon" height={13} />
-                  {design.images.length}
+                  {image.media.length}
                 </div>
               )}
-              <div className="sleeve">
-                <b>{design.name}</b>
-                <small>{formatDate(design.date)}</small>
-              </div>
+
             </div>
           )
         })}
       </Masonry>
 
       {/* MODAL */}
-      {selectedDesign && (
+      {selectedImage && (
         <div className={`modal ${modalVisibility ? 'fade-in' : ''}`}>
           <div className="slider-wrapper" style={{ transform: `translateX(${translateX}px)`, transition: initializing ? 'none' : '' }}>
             <div className="slider">
-              {selectedDesign.images.map((image, index) => {
+              {selectedImage.media.map((image, index) => {
                 const { url, details } = image.fields.file
                 const aspectRatio = (details?.image?.width || 1) / (details?.image?.height || 1)
 
@@ -127,7 +172,7 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
                     key={index}
                     ref={(el) => { slideRefs.current[index] = el }}
                   >
-                    <Image src={`https:${url}`} alt={selectedDesign.name} fill style={{ objectFit: 'contain' }} />
+                    <Image src={`https:${url}`} alt={selectedImage.name} fill style={{ objectFit: 'contain' }} />
                   </div>
                 )
               })}
@@ -141,15 +186,15 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
               <Image src={left} alt="left arrow" height={48} />
             </button>
           )}
-          {currentImageIndex < selectedDesign.images.length - 1 && (
+          {currentImageIndex < selectedImage.media.length - 1 && (
             <button className="right arrow" onClick={() => navigateModal('next')}>
               <Image src={right} alt="right arrow" height={48} />
             </button>
           )}
 
           <div className="details">
-            <h1 style={{ color: 'var(--secondary)', marginTop: 0 }}><b>{selectedDesign.name}</b></h1>
-            <h2 style={{ color: 'var(--primary)', fontWeight: '400' }}>{formatDate(selectedDesign.date)}</h2>
+            <h1 style={{ color: 'var(--secondary)', marginTop: 0 }}><b>{selectedImage.name}</b></h1>
+            <h2 style={{ color: 'var(--primary)', fontWeight: '400' }}>{formatDate(selectedImage.date)}</h2>
           </div>
         </div>
       )}
@@ -157,4 +202,4 @@ const DesignMasonry: React.FC<DesignMasonryProps> = ({ designs }) => {
   )
 }
 
-export default DesignMasonry
+export default MasonryLayout

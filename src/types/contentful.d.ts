@@ -7,10 +7,11 @@ export interface GlobalEntry extends EntrySkeletonType<GlobalFields> {contentTyp
 export interface VideoFields {videoID: string}
 export interface VideoEntry extends EntrySkeletonType<VideoFields> {contentTypeId: 'video'}
 
-export interface DesignFields {
+export interface ImageFields {
   name: string;
   date: string;
-  images: Array<{
+  type: string;
+  media: Array<{
     sys: { id: string };
     fields: {
       file: {
@@ -26,6 +27,4 @@ export interface DesignFields {
     };
   }>;
 }
-
-export interface DesignEntry extends EntrySkeletonType<DesignFields> {contentTypeId: 'design'}
-  
+export interface ImageEntry extends EntrySkeletonType<ImageFields> {contentTypeId: 'image'}

@@ -9,6 +9,7 @@ export default async function Videos() {
       {entries.items.map((video) => (
         <div key={video.sys.id} className="video">
           <iframe
+            style={{aspectRatio: 16/9}}
             src={`https://www.youtube.com/embed/${video.fields.videoID}`}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
