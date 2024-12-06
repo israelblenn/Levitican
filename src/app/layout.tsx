@@ -9,7 +9,7 @@ import instagram from "@/public/instagram.svg";
 import x from "@/public/x.svg";
 
 export const metadata: Metadata = {
-  title: "Levitican",
+  title: "LEVITICAN",
 };
 
 export default function RootLayout({ children, }: Readonly<{children: React.ReactNode; }>) {
