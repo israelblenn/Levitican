@@ -75,6 +75,12 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
     media: ImageFields['media']
   }>(null) 
 
+  // Sort images by date (descending order for newest first)
+  const sortedImages = [...images].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+
   // Open modal when an image is selected
   useEffect(() => {
     if (selectedImage) {
@@ -125,7 +131,7 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
   return (
     <>
       <Masonry breakpointCols={breakpointColumnsObj} className="masonry-grid" columnClassName="masonry-column">
-        {images.map((image) => {
+        {sortedImages.map((image) => {
           const aspectRatio = (image.media[0].fields.file.details?.image?.width || 1) / (image.media[0].fields.file.details?.image?.height || 1)
 
           return (

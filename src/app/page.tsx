@@ -209,5 +209,5 @@ export default function Home() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} />
+  return <canvas width={window.innerWidth} height={window.innerHeight} ref={canvasRef} />
 }
