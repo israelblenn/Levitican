@@ -68,22 +68,27 @@ export default function Home() {
 
     // Update dimensions
     const updateCanvasSizeAndZones = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+    
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    
       if (window.innerWidth < CONFIG.homeZoneWidth) {
-        homeZoneWidth = window.innerWidth - CONFIG.mobilePadding
-        homeZoneTop = CONFIG.mobileHomeZoneTop
-        homeZoneBottom = CONFIG.mobilePadding
+        homeZoneWidth = window.innerWidth - CONFIG.mobilePadding;
+        homeZoneTop = CONFIG.mobileHomeZoneTop;
+        homeZoneBottom = CONFIG.mobilePadding;
       } else {
-        homeZoneWidth = CONFIG.homeZoneWidth
-        homeZoneTop = CONFIG.homeZoneTop
-        homeZoneBottom = CONFIG.homeZoneBottom
+        homeZoneWidth = CONFIG.homeZoneWidth;
+        homeZoneTop = CONFIG.homeZoneTop;
+        homeZoneBottom = CONFIG.homeZoneBottom;
       }
-
-      homeZoneLeft = (window.innerWidth - homeZoneWidth) / 2
-      homeZoneHeight = window.innerHeight - homeZoneTop - homeZoneBottom
-    }
+    
+      homeZoneLeft = (window.innerWidth - homeZoneWidth) / 2;
+      homeZoneHeight = window.innerHeight - homeZoneTop - homeZoneBottom;
+    }    
     updateCanvasSizeAndZones()
 
     // Generate dots
@@ -209,5 +214,5 @@ export default function Home() {
     }
   }, [])
 
-  return <canvas width={window.innerWidth} height={window.innerHeight} ref={canvasRef} />
+  return <canvas ref={canvasRef} />
 }
