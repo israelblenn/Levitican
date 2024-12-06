@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
+
 // Configuration Variables
 const CONFIG = {
   numberOfDots: 200,

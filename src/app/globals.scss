@@ -332,7 +332,7 @@ main{
   opacity: 0;
   transition: 0.3s ease;
   pointer-events: none; 
-  z-index: 2;
+  z-index: 4;
 
   &::after {
     content: '';
@@ -340,6 +340,7 @@ main{
     height: 100%;
     background: linear-gradient(90deg, var(--background) 0%, rgba(25,25,26,0) 25%, rgba(25,25,26,0) 75%, var(--background) 100%);
     z-index: 1;
+    pointer-events: none;
   }
 }
 
@@ -387,15 +388,14 @@ main{
   display: flex;
   gap: 200px;
   height: 70vh;
-  transition: 500ms ease;
 }
 
 .slide{
   max-width: 50vw;
-  height: 100%;
+  max-height: 70vh;
+  height: 100%; 
   transition: 500ms ease;
 }
-
 
 
 @media (hover: hover) and (pointer: fine) {
@@ -437,6 +437,57 @@ main{
 
   .dropcap{ display: none }
 
+  .slider{
+    // display: flex;
+    // gap: 200px;
+    // height: 70vh;
+  }
+  
+  .slide{
+    // max-width: 50vw;
+    // max-height: 70vh;
+    // height: 100%; 
+    // transition: 500ms ease;
+
+    max-width: 90vw;
+  }
+
+  .arrow {
+    // position: absolute;
+    // z-index: 2;
+    bottom: 7.5vh;
+    translate: 0 50%;
+    
+    &.left{ left: 32px; }
+    &.right{ right: 32px; }
+  }
+  
+
+  .modal {
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // width: 100%;
+    // height: 100%;
+    // background: rgba(10, 10, 10, 0.8);
+    // display: flex;
+    // align-items: center;
+    // opacity: 0;
+    // transition: 0.3s ease;
+    // pointer-events: none; 
+    // z-index: 2;
+  
+    &::after {
+      // content: '';
+      // width: 100%;
+      // height: 100%;
+      // background: linear-gradient(90deg, var(--background) 0%, rgba(25,25,26,0) 25%, rgba(25,25,26,0) 75%, var(--background) 100%);
+      // z-index: 1;
+      // pointer-events: none;
+      display: none;
+    }
+  }
+
   nav {
     position: fixed;
     top: 0;
@@ -475,6 +526,7 @@ main{
     flex-direction: column;
     gap: var(--hamburger-gap);
     width: var(--hamburger-width);
+    height: var(--hamburger-width);
     top: var(--hamburger-margin);
     right: var(--hamburger-margin);
     z-index: 4;

@@ -83,7 +83,7 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
       if (firstSlide) {
         setInitializing(true)
         setTranslateX(-firstSlide.offsetWidth / 2)
-        setTimeout(() => setInitializing(false), 10) 
+        setTimeout(() => setInitializing(false), 100) 
       }
     }
   }, [selectedImage])
@@ -162,17 +162,33 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
           <div className="slider-wrapper" style={{ transform: `translateX(${translateX}px)`, transition: initializing ? 'none' : '' }}>
             <div className="slider">
               {selectedImage.media.map((image, index) => {
-                const { url, details } = image.fields.file
-                const aspectRatio = (details?.image?.width || 1) / (details?.image?.height || 1)
+                const { url, details } = image.fields.file;
+                const aspectRatio = (details?.image?.width || 1) / (details?.image?.height || 1);
+                const isCurrentImage = currentImageIndex === index;
 
                 return (
                   <div
-                    className='slide'
-                    style={{ aspectRatio, maxHeight: '70vh', scale: currentImageIndex === index ? '1' : '0.9' }}
+                    className="slide"
                     key={index}
                     ref={(el) => { slideRefs.current[index] = el }}
+                    style={{
+                      aspectRatio,
+                      transform: `scale(${isCurrentImage ? 1 : 0.9})`,
+                    }}
                   >
-                    <Image src={`https:${url}`} alt={selectedImage.name} fill style={{ objectFit: 'contain' }} />
+                    <a
+                      href={`https:${url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ pointerEvents: isCurrentImage ? 'auto' : 'none' }}
+                    >
+                      <Image
+                        src={`https:${url}`}
+                        alt={selectedImage.media[currentImageIndex].fields.title || 'Untitled'}
+                        fill
+                        style={{ objectFit: 'contain', cursor: isCurrentImage ? 'zoom-in' : 'default' }}
+                      />
+                    </a>
                   </div>
                 )
               })}
@@ -193,7 +209,7 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
           )}
 
           <div className="details">
-            <h1 style={{ color: 'var(--secondary)', marginTop: 0 }}><b>{selectedImage.name}</b></h1>
+            <h1 style={{ color: 'var(--secondary)', marginTop: 0 }}><b>{selectedImage.media[currentImageIndex].fields.title}</b></h1>
             <h2 style={{ color: 'var(--primary)', fontWeight: '400' }}>{formatDate(selectedImage.date)}</h2>
           </div>
         </div>
