@@ -2,6 +2,8 @@ import contentfulClient from '@/src/lib/contentful';
 import { ImageEntry } from '@/src/types/contentful';
 import MasonryLayout from '@/src/components/masonry';
 
+export const revalidate = 10;
+
 export default async function IllustrationPage() {
   const entries = await contentfulClient.getEntries<ImageEntry>({ content_type: 'image' });
 

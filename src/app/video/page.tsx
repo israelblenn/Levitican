@@ -1,6 +1,8 @@
 import contentfulClient from '@/src/lib/contentful'
 import { VideoEntry } from '@/src/types/contentful'
 
+export const revalidate = 10;
+
 export default async function Videos() {
   const entries = await contentfulClient.getEntries<VideoEntry>({ content_type: 'video' })
 
