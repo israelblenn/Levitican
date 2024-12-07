@@ -29,9 +29,32 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ media, alt }) => {
   const [fadeImageIndex, setFadeImageIndex] = useState<number | null>(null)
   const [fade, setFade] = useState(false)
   const fadeDuration = 1000
-  const fadeInterval = 4000
+  const [fadeInterval] = useState(() => {
+    // Random interval between 1s (1000ms) and 4s (4000ms)
+    return Math.floor(Math.random() * 3000) + 1000
+  })
+  const [isVisible, setIsVisible] = useState(true)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
+  // Observe visibility of the carousel
   useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        setIsVisible(entry.isIntersecting)
+      })
+    }, { threshold: 0.1 })
+
+    if (carouselRef.current) observer.observe(carouselRef.current)
+
+    return () => {
+      if (carouselRef.current) observer.unobserve(carouselRef.current)
+    }
+  }, [])
+
+  // Handle fading images only when visible
+  useEffect(() => {
+    if (!isVisible) return
+
     const interval = setInterval(() => {
       const nextIndex = (currentIndex + 1) % media.length
       setFadeImageIndex(nextIndex)
@@ -46,18 +69,21 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ media, alt }) => {
     }, fadeInterval)
 
     return () => clearInterval(interval)
-  }, [currentIndex, media.length])
+  }, [currentIndex, media.length, fadeInterval, isVisible])
 
   const currentImageUrl = media[currentIndex].fields.file.url
   const fadeImageUrl = fadeImageIndex !== null ? media[fadeImageIndex].fields.file.url : null
 
   return (
-    <div className="carousel">
-      <Image src={`https:${currentImageUrl}`} alt={alt} fill style={{ objectFit: 'cover' }}/>
-      {fade && fadeImageUrl && (<Image src={`https:${fadeImageUrl}`} alt={alt} fill className="fade-in-image"/>)}
+    <div className="carousel" ref={carouselRef}>
+      <Image src={`https:${currentImageUrl}`} alt={alt} fill style={{ objectFit: 'cover' }} />
+      {fade && fadeImageUrl && (
+        <Image src={`https:${fadeImageUrl}`} alt={alt} fill className="fade-in-image" />
+      )}
     </div>
   )
 }
+
 
 const formatDate = (date: string) => { return date.replace(/-/g, '.') }
 
