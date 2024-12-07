@@ -8,7 +8,7 @@ export default async function DesignPage() {
   const entries = await contentfulClient.getEntries<ImageEntry>({ content_type: 'image' });
 
   const images = entries.items
-    // .filter((image) => image.fields.type === 'Design') // ONLY SHOW DESIGNS
+    .filter((image) => image.fields.type === 'Design') // ONLY SHOW DESIGNS
     .map((image) => ({
       id: image.sys.id,
       name: image.fields.name,

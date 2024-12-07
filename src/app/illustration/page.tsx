@@ -8,7 +8,7 @@ export default async function IllustrationPage() {
   const entries = await contentfulClient.getEntries<ImageEntry>({ content_type: 'image' });
 
   const images = entries.items
-    // .filter((image) => image.fields.type === 'Illustration') // ONLY SHOW ILLUSTRATIONS
+    .filter((image) => image.fields.type === 'Illustration') // ONLY SHOW ILLUSTRATIONS
     .map((image) => ({
       id: image.sys.id,
       name: image.fields.name,

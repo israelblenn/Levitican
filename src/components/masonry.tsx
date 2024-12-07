@@ -2,6 +2,7 @@
 
 import Masonry from 'react-masonry-css'
 import Image from 'next/image'
+import Carousel from './carousel'
 import { useState, useRef, useEffect } from 'react' 
 import { ImageFields } from '@/src/types/contentful'
 import multi from "@/public/multi.svg" 
@@ -17,73 +18,6 @@ interface MasonryLayoutProps {
     media: ImageFields['media'] 
   }>
 }
-
-interface ImageCarouselProps {
-  media: ImageFields['media']
-  alt: string
-}
-
-// Carousel for fading collections in the grid
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ media, alt }) => {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [fadeImageIndex, setFadeImageIndex] = useState<number | null>(null)
-  const [fade, setFade] = useState(false)
-  const fadeDuration = 1000
-  const [fadeInterval] = useState(() => {
-    // Random interval between 1s (1000ms) and 4s (4000ms)
-    return Math.floor(Math.random() * 3000) + 1000
-  })
-  const [isVisible, setIsVisible] = useState(true)
-  const carouselRef = useRef<HTMLDivElement>(null)
-
-  // Observe visibility of the carousel
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        setIsVisible(entry.isIntersecting)
-      })
-    }, { threshold: 0.1 })
-
-    if (carouselRef.current) observer.observe(carouselRef.current)
-
-    return () => {
-      if (carouselRef.current) observer.unobserve(carouselRef.current)
-    }
-  }, [])
-
-  // Handle fading images only when visible
-  useEffect(() => {
-    if (!isVisible) return
-
-    const interval = setInterval(() => {
-      const nextIndex = (currentIndex + 1) % media.length
-      setFadeImageIndex(nextIndex)
-      setFade(true)
-
-      setTimeout(() => {
-        setCurrentIndex(nextIndex)
-        setFadeImageIndex(null)
-        setFade(false)
-      }, fadeDuration)
-
-    }, fadeInterval)
-
-    return () => clearInterval(interval)
-  }, [currentIndex, media.length, fadeInterval, isVisible])
-
-  const currentImageUrl = media[currentIndex].fields.file.url
-  const fadeImageUrl = fadeImageIndex !== null ? media[fadeImageIndex].fields.file.url : null
-
-  return (
-    <div className="carousel" ref={carouselRef}>
-      <Image src={`https:${currentImageUrl}`} alt={alt} fill style={{ objectFit: 'cover' }} />
-      {fade && fadeImageUrl && (
-        <Image src={`https:${fadeImageUrl}`} alt={alt} fill className="fade-in-image" />
-      )}
-    </div>
-  )
-}
-
 
 const formatDate = (date: string) => { return date.replace(/-/g, '.') }
 
@@ -105,7 +39,6 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
   const sortedImages = [...images].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
-
 
   // Open modal when an image is selected
   useEffect(() => {
@@ -172,7 +105,7 @@ const MasonryLayout: React.FC<MasonryLayoutProps> = ({ images }) => {
                 <small>{formatDate(image.date)}</small>
               </div>
               {image.media.length > 1 ? (
-                <ImageCarousel media={image.media} alt={image.name} />
+                <Carousel media={image.media} alt={image.name} />
               ) : (
                 <Image src={`https:${image.media[0].fields.file.url}`} alt={image.name} fill />
               )}
