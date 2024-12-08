@@ -10,7 +10,7 @@ interface CarouselProps {
 }
 
 const FADE_DURATION = 1000
-const FADE_INTERVAL = 1000
+const FADE_INTERVAL = 3000
 
 const Carousel: React.FC<CarouselProps> = ({ media, alt }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
