@@ -1,99 +1,76 @@
-'use client'
-
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { ImageFields } from '@/src/types/contentful'
 
 interface CarouselProps {
-  media: ImageFields['media']
+  media: Array<{
+    fields: {
+      file: {
+        url: string
+      }
+      title?: string
+    }
+  }>
   alt: string
 }
 
-const FADE_DURATION = 1000
-const FADE_INTERVAL = 3000
-
 const Carousel: React.FC<CarouselProps> = ({ media, alt }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [fadeImageIndex, setFadeImageIndex] = useState<number | null>(null)
-  const [fade, setFade] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const [initialDelayPassed, setInitialDelayPassed] = useState(false)
+  const [visibleIndex, setVisibleIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
-  const intervalRef = useRef<number | null>(null)
-  const carouselRef = useRef<HTMLDivElement | null>(null)
-  const globalStartRef = useRef<number | null>(null)
-
-  const randomDelay = useRef(Math.random() * 2000).current
-
-  const clearTimers = useCallback(() => {
-    if (intervalRef.current) {
-      window.clearInterval(intervalRef.current)
-      intervalRef.current = null
-    }
-  }, [])
+  const duration = 1000
+  const transition = 1000
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
+      ([entry]) => {
+        setIsPaused(!entry.isIntersecting)
+      },
       { threshold: 0.1 }
     )
 
-    const currentCarouselRef = carouselRef.current
-    if (currentCarouselRef) observer.observe(currentCarouselRef)
+    const element = carouselRef.current
+    if (element) {
+      observer.observe(element)
+    }
 
     return () => {
-      if (currentCarouselRef) observer.unobserve(currentCarouselRef)
+      if (element) {
+        observer.unobserve(element)
+      }
     }
   }, [])
 
   useEffect(() => {
-    const timeout = setTimeout(() => setInitialDelayPassed(true), randomDelay)
-    return () => clearTimeout(timeout)
-  }, [randomDelay])
+    if (isPaused) return
 
-  // Main animation logic
-  useEffect(() => {
-    if (!initialDelayPassed || !isVisible) {
-      clearTimers()
-      return
-    }
+    const interval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % media.length
+      setVisibleIndex(currentIndex)
+      setTimeout(() => setCurrentIndex(nextIndex), transition)
+    }, duration)
 
-    if (!globalStartRef.current) globalStartRef.current = Date.now()
-
-    const timeElapsed = Date.now() - globalStartRef.current
-    const initialDelay = FADE_INTERVAL - (timeElapsed % FADE_INTERVAL)
-
-    const timeout = setTimeout(() => {
-      intervalRef.current = window.setInterval(() => {
-        setFadeImageIndex((prevIndex) => {
-          const nextIndex = (prevIndex !== null ? prevIndex : currentIndex) + 1
-          return nextIndex % media.length
-        })
-
-        setFade(true)
-        setTimeout(() => {
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % media.length)
-          setFadeImageIndex(null)
-          setFade(false)
-        }, FADE_DURATION)
-      }, FADE_INTERVAL)
-    }, initialDelay)
-
-    return () => {
-      clearTimeout(timeout)
-      clearTimers()
-    }
-  }, [initialDelayPassed, isVisible, currentIndex, media.length, clearTimers])
-
-  const currentImageUrl = media[currentIndex].fields.file.url
-  const fadeImageUrl = fadeImageIndex !== null ? media[fadeImageIndex].fields.file.url : null
+    return () => clearInterval(interval)
+  }, [currentIndex, media.length, isPaused])
 
   return (
-    <div ref={carouselRef} className="carousel">
-      <Image src={`https:${currentImageUrl}`} alt={alt} fill style={{ objectFit: 'cover' }} />
-      {fade && fadeImageUrl && (
-        <Image src={`https:${fadeImageUrl}`} alt={alt} fill className="fade-in-image" />
-      )}
+    <div className="carousel" ref={carouselRef}>
+      {media.map((image, index) => (
+        <div
+          key={index}
+          className={`carousel-image ${index === currentIndex ? 'fade-in' : index === visibleIndex ? 'visible' : ''}`}
+          style={{ transition: `opacity ${transition}ms ease-in-out` }}
+        >
+          <Image
+            src={`https:${image.fields.file.url}`}
+            alt={`${alt} - Slide ${index + 1}`}
+            layout="fill"
+            objectFit="cover"
+            priority={index === currentIndex || index === visibleIndex}
+          />
+        </div>
+      ))}
     </div>
   )
 }

@@ -273,7 +273,7 @@ main{
 }
 
 
-// design
+// design & illustration
 
 .masonry-grid{
   display: flex;
@@ -299,6 +299,22 @@ main{
   height: 100%;
 }
 
+.carousel-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.carousel-image.visible {
+  opacity: 1;
+}
+.carousel-image.fade-in {
+  opacity: 1;
+  z-index: 2;
+}
+
+
 .fade-in-image{
   opacity: 0;
   animation: fadeIn 1s forwards;
@@ -323,7 +339,7 @@ main{
   align-items: center;
   opacity: 0;
   transition: 200ms;
-  z-index: 1;
+  z-index: 3;
 }
 
 .flag{
@@ -336,7 +352,7 @@ main{
   background-color: rgba(0, 0, 0, 0.2);
   color: white;
   padding: 6px;
-  z-index: 1;
+  z-index: 4;
 }
 
 .modal{
@@ -473,7 +489,7 @@ main{
     left: 0;
     height: 100svh;
     width: 100vw;
-    z-index: 3;
+    z-index: 5;
     transition: var(--animation-timing);
     opacity: 0;
     background: rgba(25, 25, 26, 0.8);
@@ -511,7 +527,7 @@ main{
     height: var(--hamburger-width);
     top: var(--hamburger-margin);
     right: var(--hamburger-margin);
-    z-index: 4;
+    z-index: 6;
     cursor: pointer;
     overflow: hidden;
   
