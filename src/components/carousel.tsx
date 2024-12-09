@@ -19,7 +19,7 @@ const Carousel: React.FC<CarouselProps> = ({ media, alt }) => {
   const [isPaused, setIsPaused] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
 
-  const duration = 1000
+  const duration = 2500
   const transition = 1000
 
   useEffect(() => {
