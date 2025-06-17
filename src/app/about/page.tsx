@@ -17,7 +17,7 @@ export default async function About() {
 
   return (
     <div className="about-container">
-      <Image className='dropcap' src={logoform} alt="levitican logo" height={72} />
+      <Image className='dropcap' src={logoform} alt="leviael logo" height={72} />
       <div dangerouslySetInnerHTML={{ __html: documentToHtmlString(aboutData) }} /> 
     </div>
   );
