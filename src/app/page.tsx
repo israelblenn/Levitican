@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
+
 // Configuration Variables
 const CONFIG = {
   numberOfDots: 200,
@@ -72,10 +73,9 @@ export default function Home() {
       canvas.height = window.innerHeight * devicePixelRatio;
       canvas.style.width = `${window.innerWidth}px`;
       canvas.style.height = `${window.innerHeight}px`;
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform before scaling
+    
       ctx.scale(devicePixelRatio, devicePixelRatio);
-
+    
       if (window.innerWidth < CONFIG.homeZoneWidth) {
         homeZoneWidth = window.innerWidth - CONFIG.mobilePadding;
         homeZoneTop = CONFIG.mobileHomeZoneTop;
@@ -85,7 +85,7 @@ export default function Home() {
         homeZoneTop = CONFIG.homeZoneTop;
         homeZoneBottom = CONFIG.homeZoneBottom;
       }
-
+    
       homeZoneLeft = (window.innerWidth - homeZoneWidth) / 2;
       homeZoneHeight = window.innerHeight - homeZoneTop - homeZoneBottom;
     }    
@@ -113,9 +113,8 @@ export default function Home() {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isTouchDevice.current) {
         const rect = canvas.getBoundingClientRect()
-        const scale = window.devicePixelRatio || 1
-        mouse.x = (e.clientX - rect.left) / scale
-        mouse.y = (e.clientY - rect.top) / scale
+        mouse.x = e.clientX - rect.left
+        mouse.y = e.clientY - rect.top
         mouse.isActive = true
       }
     }
@@ -125,9 +124,8 @@ export default function Home() {
       if (isTouchDevice.current) {
         const rect = canvas.getBoundingClientRect()
         const touch = e.touches[0]
-        const scale = window.devicePixelRatio || 1
-        mouse.x = (touch.clientX - rect.left) / scale
-        mouse.y = (touch.clientY - rect.top) / scale
+        mouse.x = touch.clientX - rect.left
+        mouse.y = touch.clientY - rect.top
         mouse.isActive = true
       }
     }
@@ -136,9 +134,8 @@ export default function Home() {
       if (isTouchDevice.current) {
         const rect = canvas.getBoundingClientRect()
         const touch = e.touches[0]
-        const scale = window.devicePixelRatio || 1
-        mouse.x = (touch.clientX - rect.left) / scale
-        mouse.y = (touch.clientY - rect.top) / scale
+        mouse.x = touch.clientX - rect.left
+        mouse.y = touch.clientY - rect.top
       }
     }
 
