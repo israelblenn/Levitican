@@ -23,7 +23,7 @@ export default function RootLayout({ children, }: Readonly<{children: React.Reac
             <div className="socials">
               <Link className="flex" href={'https://www.youtube.com/@LEVIAEL'}><Image src={youtube} alt="youtube" height={21} width={24}/></Link>
               <Link className="flex" href={'https://instagram.com/leviael.art'}><Image src={instagram} alt="instagram" height={21}/></Link>
-              <Link className="flex" href={'https://x.com/LEVITICAN_ARTS'}><Image src={x} alt="x" height={21}/></Link>
+              <Link className="flex" href={'https://x.com/LEVIAEL_'}><Image src={x} alt="x" height={21}/></Link>
             </div>
           </div>
           <label className="hamburger"><input type="checkbox" /></label>
@@ -38,7 +38,7 @@ export default function RootLayout({ children, }: Readonly<{children: React.Reac
             <div className="socials-mobile">
               <Link className="flex" href={'https://www.youtube.com/@LEVIAEL'}><Image src={youtube} alt="youtube" height={26} width={30}/></Link>
               <Link className="flex" href={'https://instagram.com/leviael.art'}><Image src={instagram} alt="instagram" height={26}/></Link>
-              <Link className="flex" href={'https://x.com/LEVITICAN_ARTS'}><Image src={x} alt="x" height={26}/></Link>
+              <Link className="flex" href={'https://x.com/LEVIAEL_'}><Image src={x} alt="x" height={26}/></Link>
             </div>
           </nav>
         </header>
