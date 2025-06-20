@@ -68,5 +68,5 @@ export default function Home() {
     return () => { window.removeEventListener("mousemove", handleMouseMove) }
   }, [])
 
-  return <canvas ref={canvasRef} />
+  return <canvas style={{background: 'white'}} ref={canvasRef} />
 }
