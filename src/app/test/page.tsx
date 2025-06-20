@@ -37,11 +37,11 @@ type Dot = {
 }
 
 // Blend colours
-// const interpolateColor = (primary: { r: number; g: number; b: number }, secondary: { r: number; g: number; b: number }, factor: number) => {
-//   return `rgb(${Math.round(primary.r + factor * (secondary.r - primary.r))}, ${Math.round(
-//     primary.g + factor * (secondary.g - primary.g)
-//   )}, ${Math.round(primary.b + factor * (secondary.b - primary.b))})`
-// }
+const interpolateColor = (primary: { r: number; g: number; b: number }, secondary: { r: number; g: number; b: number }, factor: number) => {
+  return `rgb(${Math.round(primary.r + factor * (secondary.r - primary.r))}, ${Math.round(
+    primary.g + factor * (secondary.g - primary.g)
+  )}, ${Math.round(primary.b + factor * (secondary.b - primary.b))})`
+}
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -62,7 +62,7 @@ export default function Home() {
 
     // Check for touch screen devices
     const checkTouchDevice = () => {
-      // isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0
+      isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0
     }
     checkTouchDevice()
 
@@ -111,41 +111,41 @@ export default function Home() {
 
     // Mouse movement handler
     const handleMouseMove = (e: MouseEvent) => {
-      // if (!isTouchDevice.current) {
+      if (!isTouchDevice.current) {
         const rect = canvas.getBoundingClientRect()
         mouse.x = e.clientX - rect.left
         mouse.y = e.clientY - rect.top
         mouse.isActive = true
-      // }
+      }
     }
 
     // Touch handlers
-    // const handleTouchStart = (e: TouchEvent) => {
-    //   if (isTouchDevice.current) {
-    //     const rect = canvas.getBoundingClientRect()
-    //     const touch = e.touches[0]
-    //     mouse.x = touch.clientX - rect.left
-    //     mouse.y = touch.clientY - rect.top
-    //     mouse.isActive = true
-    //   }
-    // }
+    const handleTouchStart = (e: TouchEvent) => {
+      if (isTouchDevice.current) {
+        const rect = canvas.getBoundingClientRect()
+        const touch = e.touches[0]
+        mouse.x = touch.clientX - rect.left
+        mouse.y = touch.clientY - rect.top
+        mouse.isActive = true
+      }
+    }
 
-    // const handleTouchMove = (e: TouchEvent) => {
-    //   if (isTouchDevice.current) {
-    //     const rect = canvas.getBoundingClientRect()
-    //     const touch = e.touches[0]
-    //     mouse.x = touch.clientX - rect.left
-    //     mouse.y = touch.clientY - rect.top
-    //   }
-    // }
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isTouchDevice.current) {
+        const rect = canvas.getBoundingClientRect()
+        const touch = e.touches[0]
+        mouse.x = touch.clientX - rect.left
+        mouse.y = touch.clientY - rect.top
+      }
+    }
 
-    // const handleTouchEnd = () => {
-    //   if (isTouchDevice.current) {
-    //     mouse.isActive = false
-    //     mouse.x = -100
-    //     mouse.y = -100
-    //   }
-    // }
+    const handleTouchEnd = () => {
+      if (isTouchDevice.current) {
+        mouse.isActive = false
+        mouse.x = -100
+        mouse.y = -100
+      }
+    }
 
     // Resize handler
     const handleResize = () => {
@@ -190,7 +190,7 @@ export default function Home() {
 
         ctx.beginPath()
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2)
-        // ctx.fillStyle = interpolateColor(CONFIG.primary, CONFIG.secondary, dot.colorPhase)
+        ctx.fillStyle = interpolateColor(CONFIG.primary, CONFIG.secondary, dot.colorPhase)
         ctx.fill()
       }
 
@@ -202,15 +202,15 @@ export default function Home() {
     // Event listeners and cleanup
     window.addEventListener("mousemove", handleMouseMove)
     window.addEventListener("resize", handleResize)
-    // window.addEventListener("touchstart", handleTouchStart)
-    // window.addEventListener("touchmove", handleTouchMove)
-    // window.addEventListener("touchend", handleTouchEnd)
+    window.addEventListener("touchstart", handleTouchStart)
+    window.addEventListener("touchmove", handleTouchMove)
+    window.addEventListener("touchend", handleTouchEnd)
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("resize", handleResize)
-      // window.removeEventListener("touchstart", handleTouchStart)
-      // window.removeEventListener("touchmove", handleTouchMove)
-      // window.removeEventListener("touchend", handleTouchEnd)
+      window.removeEventListener("touchstart", handleTouchStart)
+      window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
     }
   }, [])
 
