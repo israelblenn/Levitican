@@ -12,15 +12,15 @@ const CONFIG = {
   springStrength: 0.02,
   mouseRepelRange: 200,
   repelForce: 5,
-  mobileRepelForce: 20,
+  // mobileRepelForce: 20,
   colorSpeedRange: [0.005, 0.02],
   primary: { r: 203, g: 160, b: 84 },
   secondary: { r: 235, g: 212, b: 172 },
   homeZoneWidth: 1152,
   homeZoneTop: 232,
   homeZoneBottom: 48,
-  mobilePadding: 32,
-  mobileHomeZoneTop: 120,
+  // mobilePadding: 32,
+  // mobileHomeZoneTop: 120,
 }
 
 type Dot = {
@@ -45,7 +45,7 @@ const interpolateColor = (primary: { r: number; g: number; b: number }, secondar
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const isTouchDevice = useRef(false)
+  // const isTouchDevice = useRef(false)
 
   useEffect(() => {
     const canvas = canvasRef.current!
@@ -62,7 +62,7 @@ export default function Home() {
 
     // Check for touch screen devices
     const checkTouchDevice = () => {
-      isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0
+      // isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0
     }
     checkTouchDevice()
 
@@ -76,15 +76,15 @@ export default function Home() {
     
       ctx.scale(devicePixelRatio, devicePixelRatio);
     
-      if (window.innerWidth < CONFIG.homeZoneWidth) {
-        homeZoneWidth = window.innerWidth - CONFIG.mobilePadding;
-        homeZoneTop = CONFIG.mobileHomeZoneTop;
-        homeZoneBottom = CONFIG.mobilePadding;
-      } else {
+      // if (window.innerWidth < CONFIG.homeZoneWidth) {
+      //   homeZoneWidth = window.innerWidth - CONFIG.mobilePadding;
+      //   homeZoneTop = CONFIG.mobileHomeZoneTop;
+      //   homeZoneBottom = CONFIG.mobilePadding;
+      // } else {
         homeZoneWidth = CONFIG.homeZoneWidth;
         homeZoneTop = CONFIG.homeZoneTop;
         homeZoneBottom = CONFIG.homeZoneBottom;
-      }
+      // }
     
       homeZoneLeft = (window.innerWidth - homeZoneWidth) / 2;
       homeZoneHeight = window.innerHeight - homeZoneTop - homeZoneBottom;
@@ -111,41 +111,41 @@ export default function Home() {
 
     // Mouse movement handler
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isTouchDevice.current) {
+      // if (!isTouchDevice.current) {
         const rect = canvas.getBoundingClientRect()
         mouse.x = e.clientX - rect.left
         mouse.y = e.clientY - rect.top
         mouse.isActive = true
-      }
+      // }
     }
 
     // Touch handlers
-    const handleTouchStart = (e: TouchEvent) => {
-      if (isTouchDevice.current) {
-        const rect = canvas.getBoundingClientRect()
-        const touch = e.touches[0]
-        mouse.x = touch.clientX - rect.left
-        mouse.y = touch.clientY - rect.top
-        mouse.isActive = true
-      }
-    }
+    // const handleTouchStart = (e: TouchEvent) => {
+    //   if (isTouchDevice.current) {
+    //     const rect = canvas.getBoundingClientRect()
+    //     const touch = e.touches[0]
+    //     mouse.x = touch.clientX - rect.left
+    //     mouse.y = touch.clientY - rect.top
+    //     mouse.isActive = true
+    //   }
+    // }
 
-    const handleTouchMove = (e: TouchEvent) => {
-      if (isTouchDevice.current) {
-        const rect = canvas.getBoundingClientRect()
-        const touch = e.touches[0]
-        mouse.x = touch.clientX - rect.left
-        mouse.y = touch.clientY - rect.top
-      }
-    }
+    // const handleTouchMove = (e: TouchEvent) => {
+    //   if (isTouchDevice.current) {
+    //     const rect = canvas.getBoundingClientRect()
+    //     const touch = e.touches[0]
+    //     mouse.x = touch.clientX - rect.left
+    //     mouse.y = touch.clientY - rect.top
+    //   }
+    // }
 
-    const handleTouchEnd = () => {
-      if (isTouchDevice.current) {
-        mouse.isActive = false
-        mouse.x = -100
-        mouse.y = -100
-      }
-    }
+    // const handleTouchEnd = () => {
+    //   if (isTouchDevice.current) {
+    //     mouse.isActive = false
+    //     mouse.x = -100
+    //     mouse.y = -100
+    //   }
+    // }
 
     // Resize handler
     const handleResize = () => {
@@ -169,7 +169,7 @@ export default function Home() {
         if (mouse.isActive && distance < CONFIG.mouseRepelRange) {
           const angle = Math.atan2(dy, dx)
           const force = (CONFIG.mouseRepelRange - distance) / CONFIG.mouseRepelRange
-          const repelForce = isTouchDevice.current ? CONFIG.mobileRepelForce : CONFIG.repelForce
+          const repelForce = /* isTouchDevice.current ? CONFIG.mobileRepelForce : */ CONFIG.repelForce
           dot.x += Math.cos(angle) * force * repelForce
           dot.y += Math.sin(angle) * force * repelForce
         } else {
@@ -182,11 +182,11 @@ export default function Home() {
           dot.driftVY = Math.max(-CONFIG.driftRange[1], Math.min(CONFIG.driftRange[1], dot.driftVY))
         }
 
-        dot.colorPhase += dot.colorSpeed * dot.colorDirection
-        if (dot.colorPhase >= 1 || dot.colorPhase <= 0) {
-          dot.colorDirection *= -1
-          dot.colorPhase = Math.max(0, Math.min(dot.colorPhase, 1))
-        }
+        // dot.colorPhase += dot.colorSpeed * dot.colorDirection
+        // if (dot.colorPhase >= 1 || dot.colorPhase <= 0) {
+        //   dot.colorDirection *= -1
+        //   dot.colorPhase = Math.max(0, Math.min(dot.colorPhase, 1))
+        // }
 
         ctx.beginPath()
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2)
@@ -202,15 +202,15 @@ export default function Home() {
     // Event listeners and cleanup
     window.addEventListener("mousemove", handleMouseMove)
     window.addEventListener("resize", handleResize)
-    window.addEventListener("touchstart", handleTouchStart)
-    window.addEventListener("touchmove", handleTouchMove)
-    window.addEventListener("touchend", handleTouchEnd)
+    // window.addEventListener("touchstart", handleTouchStart)
+    // window.addEventListener("touchmove", handleTouchMove)
+    // window.addEventListener("touchend", handleTouchEnd)
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("resize", handleResize)
-      window.removeEventListener("touchstart", handleTouchStart)
-      window.removeEventListener("touchmove", handleTouchMove)
-      window.removeEventListener("touchend", handleTouchEnd)
+      // window.removeEventListener("touchstart", handleTouchStart)
+      // window.removeEventListener("touchmove", handleTouchMove)
+      // window.removeEventListener("touchend", handleTouchEnd)
     }
   }, [])
 
