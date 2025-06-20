@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react"
 
-
 // Configuration Variables
 const CONFIG = {
   numberOfDots: 200,
@@ -21,6 +20,7 @@ const CONFIG = {
   homeZoneBottom: 48,
   mobilePadding: 32,
   mobileHomeZoneTop: 120,
+  mobileBreakpoint: 768,
 }
 
 type Dot = {
@@ -45,7 +45,7 @@ const interpolateColor = (primary: { r: number; g: number; b: number }, secondar
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const isTouchDevice = useRef(false)
+  const isMobile = useRef(false)
 
   useEffect(() => {
     const canvas = canvasRef.current!
@@ -60,11 +60,15 @@ export default function Home() {
 
     const mouse = { x: -100, y: -100, isActive: false }
 
-    // Check for touch screen devices
-    const checkTouchDevice = () => {
-      isTouchDevice.current = "ontouchstart" in window || navigator.maxTouchPoints > 0
+    // Enhanced mobile detection
+    const checkMobileDevice = () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      const isSmallScreen = window.innerWidth <= CONFIG.mobileBreakpoint
+      const isPointerCoarse = window.matchMedia('(pointer: coarse)').matches
+      
+      isMobile.current = (hasTouch && isSmallScreen) || isPointerCoarse
     }
-    checkTouchDevice()
+    checkMobileDevice()
 
     // Update dimensions
     const updateCanvasSizeAndZones = () => {
@@ -76,8 +80,8 @@ export default function Home() {
     
       ctx.scale(devicePixelRatio, devicePixelRatio);
     
-      if (window.innerWidth < CONFIG.homeZoneWidth) {
-        homeZoneWidth = window.innerWidth - CONFIG.mobilePadding;
+      if (isMobile.current) {
+        homeZoneWidth = window.innerWidth - CONFIG.mobilePadding * 2;
         homeZoneTop = CONFIG.mobileHomeZoneTop;
         homeZoneBottom = CONFIG.mobilePadding;
       } else {
@@ -111,7 +115,7 @@ export default function Home() {
 
     // Mouse movement handler
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isTouchDevice.current) {
+      if (!isMobile.current) {
         const rect = canvas.getBoundingClientRect()
         mouse.x = e.clientX - rect.left
         mouse.y = e.clientY - rect.top
@@ -121,7 +125,7 @@ export default function Home() {
 
     // Touch handlers
     const handleTouchStart = (e: TouchEvent) => {
-      if (isTouchDevice.current) {
+      if (isMobile.current) {
         const rect = canvas.getBoundingClientRect()
         const touch = e.touches[0]
         mouse.x = touch.clientX - rect.left
@@ -131,7 +135,7 @@ export default function Home() {
     }
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isTouchDevice.current) {
+      if (isMobile.current) {
         const rect = canvas.getBoundingClientRect()
         const touch = e.touches[0]
         mouse.x = touch.clientX - rect.left
@@ -140,7 +144,7 @@ export default function Home() {
     }
 
     const handleTouchEnd = () => {
-      if (isTouchDevice.current) {
+      if (isMobile.current) {
         mouse.isActive = false
         mouse.x = -100
         mouse.y = -100
@@ -149,6 +153,7 @@ export default function Home() {
 
     // Resize handler
     const handleResize = () => {
+      checkMobileDevice() // Re-check on resize
       updateCanvasSizeAndZones()
 
       dots.forEach(dot => {
@@ -169,7 +174,7 @@ export default function Home() {
         if (mouse.isActive && distance < CONFIG.mouseRepelRange) {
           const angle = Math.atan2(dy, dx)
           const force = (CONFIG.mouseRepelRange - distance) / CONFIG.mouseRepelRange
-          const repelForce = isTouchDevice.current ? CONFIG.mobileRepelForce : CONFIG.repelForce
+          const repelForce = isMobile.current ? CONFIG.mobileRepelForce : CONFIG.repelForce
           dot.x += Math.cos(angle) * force * repelForce
           dot.y += Math.sin(angle) * force * repelForce
         } else {
