@@ -8,7 +8,7 @@ const CONFIG = {
   numberOfDots: 200,
   dotRadiusRange: [0.5, 2.5],
   driftRange: [1, 5],
-  driftSpeed: 0.05,
+  driftSpeed: 0.025,
   springStrength: 0.02,
   mouseRepelRange: 200,
   repelForce: 5,
