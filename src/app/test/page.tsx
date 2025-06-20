@@ -2,16 +2,25 @@
 
 import { useEffect, useRef } from "react"
 
+
+// Configuration Variables
 const CONFIG = {
-  numberOfDots: 2000,
+  numberOfDots: 200,
   mouseRepelRange: 200,
+  homeZoneWidth: 1152,
+  homeZoneTop: 232,
+  homeZoneBottom: 48,
+
 }
 
 type Dot = {
   x: number
   y: number
+  homeX: number
+  homeY: number
   radius: number
 }
+
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -19,27 +28,57 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current!
     const ctx = canvas.getContext("2d")!
+    let 
+      homeZoneWidth = CONFIG.homeZoneWidth,
+      homeZoneLeft = 0,
+      homeZoneTop = CONFIG.homeZoneTop,
+      homeZoneBottom = CONFIG.homeZoneBottom,
+      homeZoneHeight = 0
+    ;
+
     const mouse = { x: -100, y: -100, isActive: false }
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const updateCanvasSizeAndZones = () => {
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+    
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    
+
+      homeZoneWidth = CONFIG.homeZoneWidth;
+      homeZoneTop = CONFIG.homeZoneTop;
+      homeZoneBottom = CONFIG.homeZoneBottom;
+    
+      homeZoneLeft = (window.innerWidth - homeZoneWidth) / 2;
+      homeZoneHeight = window.innerHeight - homeZoneTop - homeZoneBottom;
+    }    
+    updateCanvasSizeAndZones()
 
     const dots: Dot[] = Array.from({ length: CONFIG.numberOfDots }, () => {
+      const homeX = Math.random() * homeZoneWidth + homeZoneLeft
+      const homeY = Math.random() * homeZoneHeight + homeZoneTop
       return {
-        x: Math.random() * 1000 + 0,
-        y: Math.random() * 1000 + 0,
+        x: homeX,
+        y: homeY,
+        homeX,
+        homeY,
         radius: 2,
       }
     })
 
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      mouse.x = e.clientX - rect.left
-      mouse.y = e.clientY - rect.top
-      mouse.isActive = true
-      console.log(mouse.x, mouse.y);
+        const rect = canvas.getBoundingClientRect()
+        mouse.x = e.clientX - rect.left
+        mouse.y = e.clientY - rect.top
+        mouse.isActive = true
     }
 
+
+
+    // Dot animation
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -50,8 +89,9 @@ export default function Home() {
 
         if (mouse.isActive && distance < CONFIG.mouseRepelRange) {
           const angle = Math.atan2(dy, dx)
-          dot.x += Math.cos(angle) *  5
-          dot.y += Math.sin(angle) *  5
+          const force = (CONFIG.mouseRepelRange - distance) / CONFIG.mouseRepelRange
+          dot.x += Math.cos(angle) * force * 5
+          dot.y += Math.sin(angle) * force * 5
         }
 
         ctx.beginPath()
@@ -62,11 +102,14 @@ export default function Home() {
       requestAnimationFrame(animate)
     }
 
-    animate() 
+    animate() // Start animation
 
+    // Event listeners and cleanup
     window.addEventListener("mousemove", handleMouseMove)
-    return () => { window.removeEventListener("mousemove", handleMouseMove) }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
   }, [])
 
-  return <canvas style={{background: 'white'}} ref={canvasRef} />
+  return <canvas ref={canvasRef} />
 }
